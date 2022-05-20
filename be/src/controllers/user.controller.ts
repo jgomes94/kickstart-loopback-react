@@ -1,87 +1,26 @@
+// Uncomment these imports to begin using these cool features!
+
+import {inject} from '@loopback/core';
 import {
-  Count,
-  CountSchema,
-  Filter,
-  FilterExcludingWhere,
-  repository,
-  Where,
-} from '@loopback/repository';
-import {
-  post,
-  param,
-  get,
-  getModelSchemaRef,
-  patch,
-  put,
-  del,
-  requestBody,
-  response,
-} from '@loopback/rest';
-import {User} from '../models';
-import {UserRepository} from '../repositories';
+  TokenServiceBindings,
+  MyUserService,
+  UserServiceBindings,
+  UserRepository,
+} from '@loopback/authentication-jwt';
+
+import {TokenService} from '@loopback/authentication';
+import {SecurityBindings, UserProfile} from '@loopback/security';
+import {repository} from '@loopback/repository';
 
 export class UserController {
-  constructor(
-    @repository(UserRepository)
-    public userRepository : UserRepository,
-  ) {}
+  constructor( @inject(TokenServiceBindings.TOKEN_SERVICE)
+  public jwtService: TokenService,
 
-  @post('/users')
-  @response(200, {
-    description: 'User model instance',
-    content: {'application/json': {schema: getModelSchemaRef(User)}},
-  })
-  async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(User, {
-            title: 'NewUser',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    user: Omit<User, 'id'>,
-  ): Promise<User> {
-    return this.userRepository.create(user);
-  }
+  @inject(UserServiceBindings.USER_SERVICE)
+  public userService: MyUserService,
+  
+  @inject(SecurityBindings.USER, {optional: true})  
+  public user: UserProfile,
 
-  @get('/users/count')
-  @response(200, {
-    description: 'User model count',
-    content: {'application/json': {schema: CountSchema}},
-  })
-  async count(
-    @param.where(User) where?: Where<User>,
-  ): Promise<Count> {
-    return this.userRepository.count(where);
-  }
-
-  @get('/users/{id}')
-  @response(200, {
-    description: 'User model instance',
-    content: {
-      'application/json': {
-        schema: getModelSchemaRef(User, {includeRelations: true}),
-      },
-    },
-  })
-  async findById(
-    @param.path.string('id') id: number,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>
-  ): Promise<User> {
-    return this.userRepository.findById(id, filter);
-  }
-
-  @put('/users/{id}')
-  @response(204, {
-    description: 'User PUT success',
-  })
-  async replaceById(
-    @param.path.string('id') id: number,
-    @requestBody() user: User,
-  ): Promise<void> {
-    await this.userRepository.replaceById(id, user);
-  }
+  @repository(UserRepository) protected userRepository: UserRepository) {}
 }
