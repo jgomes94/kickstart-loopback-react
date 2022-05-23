@@ -12,5 +12,9 @@ export class AccountRepository extends DefaultCrudRepository<
     @inject('datasources.db') dataSource: DbDataSource,
   ) {
     super(Account, dataSource);
+
+    (this.modelClass as any).observe('persist', async (ctx: any) => {
+      ctx.data.modifiedAt = new Date();
+    });
   }
 }

@@ -1,36 +1,43 @@
+// Copyright IBM Corp. 2020. All Rights Reserved.
+// Node module: @loopback/authentication-jwt
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+
 import {Entity, model, property} from '@loopback/repository';
 
 @model({settings: {strict: false}})
-export class Account extends Entity {
+export class UserCredentials extends Entity {
   @property({
     type: 'string',
     id: true,
-    generated: true,
+    generated: false,
+    defaultFn: 'uuidv4',
   })
-  id?: string;
+  id: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  name: string;
+  password: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  userId: string;
 
   @property({
     type: 'date',
-    required: true,
+    default: () => new Date()
   })
+  created ? : string;
   
   @property({
     type: 'date',
     default: () => new Date()
   })
-  createdAt ? : string;
-  
-  @property({
-    type: 'date',
-    default: () => new Date()
-  })
-  modifiedAt ? : string;
+  modified ? : string;
 
   // Define well-known properties here
 
@@ -38,13 +45,14 @@ export class Account extends Entity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<Account>) {
+  constructor(data?: Partial<UserCredentials>) {
     super(data);
   }
 }
 
-export interface AccountRelations {
+export interface UserCredentialsRelations {
   // describe navigational properties here
 }
 
-export type AccountWithRelations = Account & AccountRelations;
+export type UserCredentialsWithRelations = UserCredentials &
+  UserCredentialsRelations;

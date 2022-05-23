@@ -1,36 +1,72 @@
-import {Entity, model, property} from '@loopback/repository';
+// Copyright IBM Corp. 2020. All Rights Reserved.
+// Node module: @loopback/authentication-jwt
+// This file is licensed under the MIT License.
+// License text available at https://opensource.org/licenses/MIT
+import {Entity, hasOne, model, property} from '@loopback/repository';
+import {UserCredentials} from './user-credentials.model';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    strict: false,
+  },
+})
 export class User extends Entity {
+  // must keep it
+  // add id:string<UUID>
+  @property({
+    type: 'string',
+    id: true,
+    generated: false,
+    defaultFn: 'uuidv4',
+  })
+  id: string;
+
   @property({
     type: 'string',
   })
   realm?: string;
 
+  // must keep it
+  @property({
+    type: 'string',
+  })
+  username?: string;
+
+  // must keep it
+  // feat email unique
   @property({
     type: 'string',
     required: true,
+    index: {
+      unique: true,
+    },
   })
-  username: string;
+  email: string;
 
   @property({
     type: 'boolean',
-    default: false,
   })
   emailVerified?: boolean;
 
   @property({
     type: 'string',
-    required: true,
   })
-  password: string;
+  verificationToken?: string;
 
   @property({
-    type: 'string',
-    id: true,
-    generated: true,
+    type: 'date',
+    default: () => new Date()
   })
-  id?: string;
+  created ? : string;
+  
+  @property({
+    type: 'date',
+    default: () => new Date()
+  })
+  modified ? : string;
+
+  @hasOne(() => UserCredentials)
+  userCredentials: UserCredentials;
 
   // Define well-known properties here
 

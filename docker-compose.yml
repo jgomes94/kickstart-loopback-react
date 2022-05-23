@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   db:
-    container_name: postgres
+    container_name: postgres-kickstart
     image: postgres
     environment:
       POSTGRES_DB: postgres

@@ -1,36 +1,35 @@
-import {Entity, model, property} from '@loopback/repository';
+import {belongsTo, Entity, model, property} from '@loopback/repository';
+import {User} from '.';
 
 @model({settings: {strict: false}})
-export class Account extends Entity {
+export class RefreshToken extends Entity {
   @property({
-    type: 'string',
-    id: true,
+    type: 'number',
+    id: 1,
     generated: true,
   })
-  id?: string;
+  id: number;
+
+  @belongsTo(() => User)
+  userId: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  name: string;
+  refreshToken: string;
 
   @property({
     type: 'date',
-    required: true,
+    default: () => new Date()
   })
+  created ? : string;
   
   @property({
     type: 'date',
     default: () => new Date()
   })
-  createdAt ? : string;
-  
-  @property({
-    type: 'date',
-    default: () => new Date()
-  })
-  modifiedAt ? : string;
+  modified ? : string;
 
   // Define well-known properties here
 
@@ -38,13 +37,13 @@ export class Account extends Entity {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [prop: string]: any;
 
-  constructor(data?: Partial<Account>) {
+  constructor(data?: Partial<RefreshToken>) {
     super(data);
   }
 }
 
-export interface AccountRelations {
+export interface RefreshTokenRelations {
   // describe navigational properties here
 }
 
-export type AccountWithRelations = Account & AccountRelations;
+export type RefereshTokenWithRelations = RefreshToken & RefreshTokenRelations;
