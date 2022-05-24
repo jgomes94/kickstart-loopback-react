@@ -25,6 +25,8 @@ import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
 
+import { AccountRepository } from '../repositories';
+
 @model()
 export class NewUserRequest extends User {
   @property({
@@ -154,7 +156,6 @@ export class UserController {
     );
 
     await this.userRepository.userCredentials(savedUser.id).create({password});
-
     return savedUser;
   }
 }

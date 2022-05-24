@@ -17,11 +17,6 @@ export class Account extends Entity {
 
   @property({
     type: 'date',
-    required: true,
-  })
-  
-  @property({
-    type: 'date',
     default: () => new Date()
   })
   createdAt ? : string;

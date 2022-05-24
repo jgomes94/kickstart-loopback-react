@@ -1,13 +1,11 @@
 import {
   Count,
   CountSchema,
-  Filter,
   FilterExcludingWhere,
   repository,
   Where,
 } from '@loopback/repository';
 import {
-  post,
   param,
   get,
   getModelSchemaRef,
@@ -26,27 +24,6 @@ export class AccountController {
     public accountRepository : AccountRepository,
   ) {}
 
-  @post('/accounts')
-  @response(200, {
-    description: 'Account model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Account)}},
-  })
-  async create(
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(Account, {
-            title: 'NewAccount',
-            exclude: ['id'],
-          }),
-        },
-      },
-    })
-    account: Omit<Account, 'id'>,
-  ): Promise<Account> {
-    return this.accountRepository.create(account);
-  }
-
   @get('/accounts/count')
   @response(200, {
     description: 'Account model count',
@@ -56,24 +33,6 @@ export class AccountController {
     @param.where(Account) where?: Where<Account>,
   ): Promise<Count> {
     return this.accountRepository.count(where);
-  }
-
-  @get('/accounts')
-  @response(200, {
-    description: 'Array of Account model instances',
-    content: {
-      'application/json': {
-        schema: {
-          type: 'array',
-          items: getModelSchemaRef(Account, {includeRelations: true}),
-        },
-      },
-    },
-  })
-  async find(
-    @param.filter(Account) filter?: Filter<Account>,
-  ): Promise<Account[]> {
-    return this.accountRepository.find(filter);
   }
 
   @get('/accounts/{id}')
